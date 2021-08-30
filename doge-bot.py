@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
+prev_tweet_id = ""
+
 #authentication function
 def twitter_auth():
     try:
@@ -27,15 +29,15 @@ def get_twitter_client():
 # function to check tweet for doge
 def get_tweet():
     # Anjay75634879
-    user = "elonmusk"
+    user = "Anjay75634879"
     client = get_twitter_client()
-    tweet = ''
+    tweet_data = ''
     
     for status in tweepy.Cursor(client.user_timeline, screen_name=user).items(1):
-        tweet = status.text
+        tweet_data = status
     
     # check if it is equal to old tweet or invoke a listener for a new tweet
-    return tweet
+    return tweet_data
 
 # function to check if tweet contains doge
 def check_tweet(tweet):
@@ -51,16 +53,20 @@ def check_tweet(tweet):
 
 # listener function
 def trigger():
+    global prev_tweet_id
     print("Checking for any new tweets...")
     threading.Timer(7.0, trigger).start()
     tweet = get_tweet()
-    check_tweet(tweet)
+    if(tweet.id != prev_tweet_id):
+        check_tweet(tweet.text)
+        prev_tweet_id = tweet.id
+    else:
+        print('Going to sleep for 7 seconds')
+        pass
 
 if __name__ == '__main__':
     trigger()
-        
 
-        
         
 def get_last_tweet(self):
     tweet = self.client.user_timeline(id=self.client_id, count = 1)[0]
