@@ -1,3 +1,5 @@
+from binance.spot import Spot
+import client_env
 import sys,tweepy, os, re, threading
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -5,6 +7,19 @@ dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 prev_tweet_id = ""
+
+# Market order to buy doge
+def buy_doge(api_key, api_seccret_key):
+    client = Spot()
+    client = Spot(key=api_key, secret=api_seccret_key)
+    params = {
+        'symbol': 'DOGEUSDT',
+        'side': 'BUY',
+        'type': 'MARKET',
+        'quantity': 50
+    }
+    response = client.new_order(**params)
+    return response
 
 #authentication function
 def twitter_auth():
@@ -28,8 +43,7 @@ def get_twitter_client():
 
 # function to check tweet for doge
 def get_tweet():
-    # Anjay75634879
-    user = "Anjay75634879"
+    user = "elonmusk"
     client = get_twitter_client()
     tweet_data = ''
     
@@ -46,7 +60,7 @@ def check_tweet(tweet):
     
     if check:
         print("Tweet contains doge. Triggering buy via kraken API")
-        # call buy function and check if buy was successful
+        buy_doge(client_env.api_key, client_env.secret_key)
     else:
         print("Going to sleep for 7 seconds")
 
@@ -66,6 +80,7 @@ def trigger():
 
 if __name__ == '__main__':
     trigger()
+    # TODO: Add Kraken API to trigger BUY
 
         
 def get_last_tweet(self):
