@@ -80,7 +80,6 @@ def trigger():
 
 if __name__ == '__main__':
     trigger()
-    # TODO: Add Kraken API to trigger BUY
 
         
 def get_last_tweet(self):
